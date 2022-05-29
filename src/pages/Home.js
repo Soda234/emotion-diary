@@ -13,6 +13,13 @@ const Home = () => {
   const [data, setData] = useState([]) 
   const [currentDate, setCurrentDate] = useState(moment());
 
+  useEffect(() =>{
+    const title = document.getElementsByTagName('title')[0]
+    title.innerHTML = `히거루의 감정 일기`
+}, [])
+
+
+
   useEffect(() => { // diaryData와 현재 월의 데이터가 바뀌었을때마다 첫째날 둘째날 값을 구함
     if(diaryData.length !== 0){
     const firstDay = new Date(currentDate.startOf('month')._d).getTime()

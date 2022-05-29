@@ -8,6 +8,7 @@ import Diary from './pages/Diary';
 import Button from './components/Buttons'; // CUSTOM BUTTON
 import Header from './components/Header';
 import Title from './pages/Title';
+import { useEffect } from 'react';
 
 
 
@@ -40,6 +41,8 @@ const reducer = (state, action) => {
       return state;
 
   }
+
+  localStorage.setItem('diray', JSON.stringify(newState))
   
   return newState;
 
@@ -52,53 +55,29 @@ export const DiaryDispatchContext = React.createContext()
 
 function App() {
 
-  const dummyData = [
-    {
-      id : 1,
-      emotion : 1,
-      content : "test",
-      date : 1653453000000
-    },
-    {
-      id : 2,
-      emotion : 2,
-      content : "test2",
-      date : 1653493223796
-    },
-    {
-      id : 3,
-      emotion : 3,
-      content : "test3",
-      date : 1653493223797
-    },
-    {
-      id : 4,
-      emotion : 4,
-      content : "test4",
-      date : 1653493223799
-    },
-    {
-      id : 5,
-      emotion : 5,
-      content : "test5",
-      date : 1653493223799
-    },
-    {
-      id : 6,
-      emotion : 5,
-      content : "test6",
-      date : 1753493223799
+  useEffect(() => {
+    const localData = localStorage.getItem('diray')
+    if(localData){
+      const diaryList = JSON.parse(localData).sort((a,b) => Number(b.id) - Number(a.id))
+      
+      if(diaryList.length >= 1){
+      dataId.current = Number(diaryList[0]) + 1
+      dispatch({type:"INIT", data:diaryList})
     }
-  ]
+    }
+  }, [])
 
 
-  const [data, dispatch] = useReducer(reducer, dummyData);
 
-  const dataId = useRef(6);
+
+
+  const [data, dispatch] = useReducer(reducer, []);
+
+  const dataId = useRef(0);
 
   const onCreate = (date, content, emotion) => {
     dispatch({type : "CREATE", data:{
-      id : dataId,
+      id : dataId.current,
       date : new Date(date).getTime(),
       content,
       emotion

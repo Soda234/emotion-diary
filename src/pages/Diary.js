@@ -14,6 +14,12 @@ const Diary = () => {
     const [data, setData] = useState() 
     const diaryData = useContext(DiaryDataContext)
 
+    useEffect(() =>{
+        const title = document.getElementsByTagName('title')[0]
+        console.log("title", title)
+        title.innerHTML = `히거루의 ${id}번 일기`
+    }, [])
+
     useEffect(() => {
         
         if(diaryData.length >= 1){

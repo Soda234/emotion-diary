@@ -11,6 +11,12 @@ const Edit = () => {
 
     const diaryData = useContext(DiaryDataContext)
 
+    useEffect(() =>{
+      const title = document.getElementsByTagName('title')[0]
+      console.log("title", title)
+      title.innerHTML = `히거루의 ${id}번 일기 수정`
+  }, [])
+
     useEffect(() => {
       if(diaryData.length >= 1){
         const targetDiary = diaryData.find((it) => Number(it.id) === Number(id))

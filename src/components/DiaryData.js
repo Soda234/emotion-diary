@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import React,{ useState } from 'react';
 import Button from './Buttons';
 import { useNavigate } from 'react-router-dom';
 import DiaryItem from './DiaryItem';
+import { useEffect } from 'react';
 
 
 
-const SortMenu = ({value, onChange, optionList, emotionType, emoitonOptionList, onChange2}) => {
+const SortMenu = React.memo(({value, onChange, optionList, emotionType, emoitonOptionList, onChange2}) => {
+   
+    
     return(
         <div>
         <select className='SortMenu' value={value} onChange={(e) => onChange(e.target.value)}> 
@@ -26,7 +29,7 @@ const SortMenu = ({value, onChange, optionList, emotionType, emoitonOptionList, 
 
         </div>
     )
-}
+})
 
 
 const DiaryData =({diaryData}) => {

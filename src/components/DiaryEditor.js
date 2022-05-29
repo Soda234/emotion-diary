@@ -1,7 +1,7 @@
 import Header from './Header';
 import Button from './Buttons';
 import { useNavigate } from 'react-router-dom';
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import  moment from 'moment';
 import EmotionItem from './EmotionItem';
 import { useContext } from 'react';
@@ -44,11 +44,18 @@ const DiaryEditor = ({isEdit, orginData}) => {
     const [content, setContent] = useState("");
     const navigate = useNavigate();
 
-    const {onCreate , onEdit } = useContext(DiaryDispatchContext)
+    const {onCreate , onEdit, onRemove } = useContext(DiaryDispatchContext)
     
     
-    const changeEmotion = (emotion_id) => {
+    const changeEmotion = useCallback((emotion_id) => {
         setEmotion(emotion_id)
+    }, [])
+
+    const handleRemove = () => {
+      if(window.confirm("일기를 정말 삭제하시겠습니까?")){
+        onRemove(orginData.id)
+        navigate('/home', {replace : true})
+      }
     }
 
     const onSubmit = () => {
@@ -82,52 +89,74 @@ const DiaryEditor = ({isEdit, orginData}) => {
 
    
     return (
-        <div className='DiaryEditor'>
-         <Header headText={headText} leftChild={<Button text={"< 뒤로 가기"} onClick={() => navigate(-1)}/>}/>
-         <div>
-             <section>
-                 <h4>날짜를 선택하세요</h4>
-                 <div className='input'>
-                     <input className='input_date' type="date" value={date} onChange={(e) => setDate(e.target.value)}/>
-                      </div>
-             </section>
-         </div>
-         <div>
-             <section>
-                 <h4>오늘의 감정</h4>
-                 <div className='emotion_list'>
-                    {emotionList.map((it) => {
-                        return(
-                            <div key={it.emotion_id}>
-                             <EmotionItem
-                              key={it.emotion_id}
-                              {...it}
-                              onClick={changeEmotion}
-                              isSelected={it.emotion_id === emotion}
-                              />
-                            </div>
-                        )
-                    })}
-                      </div>
-             </section>
-         </div>
-         <div>
-             <section>
-                 <h4>오늘의 일기</h4>
-                 <div className='input text_area'>
-                     <textarea ref={contentRef} value={content} onChange={(e) => setContent(e.target.value)} placeholder="거루의 하루는 어땠나용?"/>
-                      </div>
-             </section>
-
-             <section>
-              <div className='control_box'>
-                    <Button text={"취소하기"} onClick={() => navigate(-1)} />
-                    <Button text={"작성완료"} type={"success"} onClick={onSubmit}/>
+      <div className="DiaryEditor">
+        <Header
+          headText={headText}
+          leftChild={
+            <Button text={"< 뒤로 가기"} onClick={() => navigate(-1)} />
+          }
+          rightChild={
+            isEdit && (
+              <div>
+                <Button text={"삭제하기"} type={"error"}  onClick={() => handleRemove()}/>
               </div>
-             </section>
-         </div>
+            )
+          }
+        />
+        <div>
+          <section>
+            <h4>날짜를 선택하세요</h4>
+            <div className="input">
+              <input
+                className="input_date"
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </div>
+          </section>
         </div>
-    )
+        <div>
+          <section>
+            <h4>오늘의 감정</h4>
+            <div className="emotion_list">
+              {emotionList.map((it) => {
+                return (
+                  <div key={it.emotion_id}>
+                    <EmotionItem
+                      key={it.emotion_id}
+                      {...it}
+                      onClick={changeEmotion}
+                      isSelected={it.emotion_id === emotion}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </div>
+        <div>
+          <section>
+            <h4>오늘의 일기</h4>
+            <div className="input text_area">
+              <textarea
+                ref={contentRef}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="거루의 하루는 어땠나용?"
+              />
+            </div>
+          </section>
+
+          <section>
+            <div className="control_box">
+              <Button text={"취소하기"} onClick={() => navigate(-1)} />
+              <Button text={"작성완료"} type={"success"} onClick={onSubmit} />
+            </div>
+          </section>
+        </div>
+      </div>
+    );
 }
 
 export default DiaryEditor
